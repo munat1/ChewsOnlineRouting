@@ -43,7 +43,7 @@ public class Netzwerk {
         ArrayList<Vector2D> cl_2_old = kk.createCluster_2(this, c_1_old, c_2_old);
         Vector2D c_1_new = kk.trainCenter_1(cl_1_old, c_1_old);
         Vector2D c_2_new = kk.trainCenter_2(cl_2_old, c_2_old);
-       while (c_1_new.distance(c_1_old) > 1.0 && c_2_new.distance(c_2_old) > 1.0){
+       while (c_1_new.distance(c_1_old) > 0.1 && c_2_new.distance(c_2_old) > 0.1){
             cl_1_old.clear();
             cl_2_old.clear();
             cl_1_old = kk.createCluster_1(this, c_1_new, c_2_new);
@@ -85,25 +85,48 @@ public class Netzwerk {
     }
     public ArrayList<Vector2D> Chew(Vector2D s, Vector2D t, Pane ebene) {
         this.ebene = ebene;
+        double distancechew = 0;
+        double distance = s.distance(t);
         ArrayList<Vector2D> route = new ArrayList<Vector2D>();
         Vector2D current = s;
         route.add(s);
         while (!current.equals(t)) {
+            /*if (current.isHighway) {
+                for (Vector2D k : current.nachbarMenge) {
+                    if (k.isHighway && k.distance(t) < current.distance(t)) {
+                        route.add(k);
+                        current = k;
+                        s= current;
+                        for (Vector2D z : current.nachbarMenge) {
+                            if (z.equals(t)) {
+                                route.add(t);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }*/
             Edge2D rightest = rightestTriangle(s, t, current);
-            if(rightest.b.equals(t)){
+            if (rightest.b.equals(t)) {
                 route.add(t);
                 break;
             }
             Vector2D rightestPoint = rightestPoint(s, t, findeKreis(rightest.a, rightest.b, current), findeKreis(rightest.a, rightest.b, current).sub(rightest.a).mag());
             Vector2D leftistPoint = leftistPoint(s, t, findeKreis(rightest.a, rightest.b, current), findeKreis(rightest.a, rightest.b, current).sub(rightest.a).mag());
             if (determineTheSide(current.sub(leftistPoint), rightestPoint.sub(leftistPoint)) == determineTheSide(rightest.b.sub(leftistPoint), rightestPoint.sub(leftistPoint))) {
-                    route.add(rightest.b);
-                    current = rightest.b;
+                route.add(rightest.b);
+                current = rightest.b;
             } else {
-                    route.add(rightest.a);
-                    current = rightest.a;
+                route.add(rightest.a);
+                current = rightest.a;
             }
         }
+        for (int i = 0; i < route.size() - 1; i++){
+            distancechew += route.get(i).distance(route.get(i + 1));
+    }
+        System.out.println(distance);
+        System.out.println(distancechew);
+        System.out.println("competitive ratio = " + distancechew/distance);
         return route;
     }
     public Vector2D findeKreis(Vector2D p_1, Vector2D p_2, Vector2D p_3){
@@ -120,7 +143,6 @@ public class Netzwerk {
     public Vector2D rightestPoint(Vector2D s, Vector2D t, Vector2D c, double r){
         Vector2D v = t.sub(s).mult(c.sub(s).dot(t.sub(s))/t.sub(s).dot(t.sub(s))).add(s);
         double lenght = Math.sqrt(r*r - c.sub(v).mag() * c.sub(v).mag());
-        System.out.println(lenght);
         Vector2D rightest = v.add(t.sub(s).mult(1/t.sub(s).mag()).mult(lenght));
         return rightest;
     }
@@ -159,12 +181,12 @@ public class Netzwerk {
             break;
         }
         Edge2D rightest = new Edge2D(s, nexttoS);
-        for (Vector2D v:current.nachbarMenge){
-            if (v.equals(t)){
+        for (Vector2D v:current.nachbarMenge) {
+            if (v.equals(t)) {
                 return new Edge2D(current, v);
             }
-            for (Vector2D w : v.nachbarMenge){
-                if (current.nachbarMenge.contains(w) || current.equals(w)){
+            for (Vector2D w : v.nachbarMenge) {
+                if (current.nachbarMenge.contains(w) || current.equals(w)) {
                     if (determineTheSide(v.sub(s), t.sub(s)) != determineTheSide(w.sub(s), t.sub(s))) {
                         if (findIntersection(new Edge2D(v, w), new Edge2D(s, t)).distance(t) < findIntersection(rightest, new Edge2D(s, t)).distance(t)) {
                             rightest = new Edge2D(v, w);
