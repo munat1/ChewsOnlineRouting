@@ -8,7 +8,7 @@ import java.io.File;
 public class PointLoader {
 
     public String fileText = null;
-    File file = new File("/Users/munat/Desktop/aktüelpg/test1/fancyrandom");
+    File file = new File("/Users/munat/Desktop/aktüelpg/test1/clustertest2");
 
     public PointLoader(){
         try{
@@ -40,7 +40,6 @@ public class PointLoader {
 
     public List<Vector2D> getVertices() {
         List<Vector2D> nodes = getPointsFromFile("GraphNodes");
-        //nodes.addAll(0, getVector2DsFromFile("HighwayNodes"));
         nodes.addAll(0, getPointsFromFile("RoutingNodes"));
         HashSet<String> hs = new HashSet<>();
         List<Vector2D> nodes_tmp = new ArrayList<>();
