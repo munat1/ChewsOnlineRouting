@@ -74,7 +74,6 @@ public class StartGui extends Application {
     for(Vector2D v: N.knotenMenge){
       if(points.getVertices().get(0).x == v.x && points.getVertices().get(0).y == v.y){
         s = v;
-        System.out.println("s set");
         Circle knoten = new Circle();
         knoten.setCenterX(v.x);
         knoten.setCenterY(v.y);
@@ -85,7 +84,6 @@ public class StartGui extends Application {
       }
       if(points.getVertices().get(1).x == v.x && points.getVertices().get(1).y == v.y){
         t = v;
-        System.out.println("t set");
         Circle knoten = new Circle();
         knoten.setCenterX(v.x);
         knoten.setCenterY(v.y);
